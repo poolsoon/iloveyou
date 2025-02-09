@@ -1,1 +1,1 @@
-https://github.com/poolsoon/second_project/blob/master/mac_address/mac.py
+https://github.com/poolsoon/second_project
