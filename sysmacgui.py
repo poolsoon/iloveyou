@@ -1,5 +1,6 @@
 import subprocess
 import tkinter as tk
+import webbrowser
 from getmac import get_mac_address
 import socket
 import requests
@@ -11,7 +12,6 @@ def get_cpu_id():
     command = "wmic cpu get ProcessorId"
     cpu_id = subprocess.check_output(command, shell=True).decode().strip().split("\n")[1]
     return cpu_id
-
 # -----------------------------------------------------------------------------------------------------
 def get_isp(ip_address=None):
     if ip_address is None:
@@ -21,7 +21,6 @@ def get_isp(ip_address=None):
     data = response.json()
     isp = data.get('org')
     return isp
-
 # -----------------------------------------------------------------------------------------------------
 def get_isp2(ip_address=None):
     if ip_address is None:
@@ -31,16 +30,18 @@ def get_isp2(ip_address=None):
     data = response.json()
     isp2 = data.get('timezone')
     return isp2
-
 # -----------------------------------------------------------------------------------------------------
 # 물리적 주소 호출
 mac_address = get_mac_address()
+
 # 공인아이피 v4 주소
 response = requests.get('https://api.ipify.org')
 ipout_address = response.text
+
 # 컴퓨터 이름
 hostname = socket.gethostname()
 ip_address = socket.gethostbyname(hostname)
+
 # 윈도우 버전 추출
 os_name = platform.system()
 os_version = platform.version()
@@ -57,13 +58,20 @@ def open_taskmgr():
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
 
+# 원격지원 웹사이트 열기
+def open_remote_support():
+    webbrowser.open('https://86.586.kr')  # 여기에 원격지원 사이트 URL을 입력하세요.
+
 # -----------------------------------------------------------------------------------------------------
 # GUI를 위한 Tkinter 설정
 def display_info():
     root = tk.Tk()
-    root.title("System Information")
+    root.title("푸름정보기술")
     root.geometry("500x530")
-
+    
+    # 아이콘 설정 (아이콘 파일 경로를 지정)
+    root.iconbitmap('D:/workspace/mark.ico')  # 'myicon.ico'는 사용할 아이콘 파일 경로로 변경
+    
     # 라벨들을 생성하여 정보를 표시
     tk.Label(root, text="컴퓨터 정보----------------------------").pack(pady=5)
     tk.Label(root, text=f"MAC 주소: {mac_address}").pack(pady=5)
@@ -80,13 +88,21 @@ def display_info():
     tk.Label(root, text=f"Architecture: {architecture}").pack(pady=5)
     tk.Label(root, text=f"Processor: {processor}").pack(pady=5)
     tk.Label(root, text="컴퓨터 상태 정보-----------------------").pack(pady=5)
+    
+    # 버튼들을 담을 프레임 생성
+    frame = tk.Frame(root)
+    frame.pack(pady=20)
 
     # "작업 관리자" 버튼
-    tk.Button(root, text="작업 관리자", command=open_taskmgr).pack(pady=20)
+    tk.Button(frame, text="작업 관리자", command=open_taskmgr).pack(side=tk.LEFT, padx=10)
+
+    # "원격지원" 버튼
+    tk.Button(frame, text="원격지원", command=open_remote_support).pack(side=tk.LEFT, padx=10)
 
     # GUI 루프 시작
     root.mainloop()
 
 # -----------------------------------------------------------------------------------------------------
+
 # GUI 표시
 display_info()
